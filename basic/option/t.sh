@@ -1,1 +1,0 @@
-curl -A "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Mobile Safari/537.36" -H "Content-Type:application/json;charset=UTF-8" -d '{"time_at": 1590139637, "time_diff":3600, "repeate_time":24}' -X POST "https://forceup.io:8700/v0/filscan/mining/ActiveStorageMinerCountAtTime"
