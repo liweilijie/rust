@@ -15,5 +15,8 @@ fn main() {
     println!("表示空值的情况：");
     null_value::null_value();
 
+    println!("Option操作：");
+    student::operation_op();
+
     println!("over Option");
 }
