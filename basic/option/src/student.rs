@@ -80,4 +80,98 @@ pub fn operation_op() {
     // map_or(): 有值则执行闭包返回值，否则返回一个自定义默认值
     let x = Some("foo");
     assert_eq!(x.map_or(42, |v|v.len()), 3);
+
+    // map_or_else(): 有值，执行闭包，否则执行另一个闭包
+    let k = 21;
+    let x = Some("foo");
+    assert_eq!(x.map_or_else(||2*k, |v|v.len()), 3);
+
+    let x: Option<&str> = None;
+    assert_eq!(x.map_or_else(||2*k, |v|v.len()), 42);
+
+    // ok_or(): 有值，返回Result, 否则返回自定义的错误
+    let x = Some("foo");
+    assert_eq!(x.ok_or(0), Ok("foo"));
+
+    let x: Option<&str> = None;
+    assert_eq!(x.ok_or(0), Err(0));
+
+    // ok_or_else(): 有值，返回Result， 否则执行代表错误的闭包
+    let x = Some("foo");
+    assert_eq!(x.ok_or_else(||0), Ok("foo"));
+
+    let x: Option<&str> = None;
+    assert_eq!(x.ok_or_else(||0), Err(0));
+
+    // iter(): 把Option转换为迭代器
+    let x = Some(4);
+    assert_eq!(x.iter().next(), Some(&4));
+
+    let x: Option<u32> = None;
+    assert_eq!(x.iter().next(), None);
+
+    // and(): 有值，返回另一个Option, 否则返回None
+    let x = Some(2);
+    let y: Option<&str> = None;
+    assert_eq!(x.and(y), None);
+
+    let x: Option<u32> = None;
+    let y = Some("foo");
+    assert_eq!(x.and(y), None);
+
+    let x: Option<u32> = None;
+    let y: Option<&str> = None;
+    assert_eq!(x.and(y), None);
+
+    // and_then(): 有值，执行闭包，否则返回None
+    fn sq(x: u32) -> Option<u32> { Some(x * x)}
+    fn nope(_: u32) -> Option<u32> {None}
+
+    assert_eq!(Some(2).and_then(sq).and_then(sq), Some(16));
+    assert_eq!(Some(2).and_then(sq).and_then(nope), None);
+    assert_eq!(Some(2).and_then(nope).and_then(sq), None);
+    assert_eq!(None.and_then(sq).and_then(sq), None);
+
+    // filter(): 过滤器，过滤出自己想要的值
+    fn is_even(n: &i32) -> bool {
+        n % 2 == 0
+    }
+    assert_eq!(None.filter(is_even), None);
+    assert_eq!(Some(3).filter(is_even), None);
+    assert_eq!(Some(4).filter(is_even), Some(4));
+
+    // or(): 有值，返回自身，否则返回自定义的Option
+    let x = Some(2);
+    let y = None;
+    assert_eq!(x.or(y), Some(2));
+
+    let x = None;
+    let y = Some(100);
+    assert_eq!(x.or(y), Some(100));
+
+    let x = Some(2);
+    let y = Some(100);
+    assert_eq!(x.or(y), Some(2));
+
+    let x: Option<u32> = None;
+    let y = None;
+    assert_eq!(x.or(y), None);
+
+    // or_else(): 有值，返回自身，否则执行闭包
+    fn nobody() -> Option<&'static str> { None }
+    fn vikings() -> Option<&'static str> { Some("vikings") }
+    assert_eq!(Some("barbarians").or_else(vikings), Some("barbarians"));
+    assert_eq!(None.or_else(vikings), Some("vikings"));
+    assert_eq!(None.or_else(nobody), None);
+
+    // take(): 取出一个值
+    let mut x = Some(2);
+    let y = x.take();
+    assert_eq!(x, None);
+    assert_eq!(y, Some(2));
+
+    let mut x: Option<u32> = None;
+    let y = x.take();
+    assert_eq!(x, None);
+    assert_eq!(y, None);
 }
